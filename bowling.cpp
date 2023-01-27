@@ -11,19 +11,19 @@ typedef struct {
 	int score[MAX_FRAMES][2];
 	int total;
 } Player;
-
+// le nombre des jouerus 
 int NombreJoueur() {
 	int LesJoueurs;
-	printf("Combien de joueurs souhaitez-vous (2-%d) ? ", MAX_PLAYERS);
+	printf("Combien de joueur souhaitez-vous (1-%d) ? ", MAX_PLAYERS);
 	scanf("%d", &LesJoueurs);
-	while (LesJoueurs < 2 || LesJoueurs > MAX_PLAYERS) {
-		printf("Le nombre de joueurs doit etre compris entre 2 et %d. Reessayez : ", MAX_PLAYERS);
+	while (LesJoueurs < 1 || LesJoueurs > MAX_PLAYERS) {
+		printf("Le nombre de joueur doit etre compris entre 1 et %d. Reessayez : ", MAX_PLAYERS);
 		scanf("%d", &LesJoueurs);
 	}
 
 	return LesJoueurs;
 }
-
+// pour les nom des joueurs
 void NomJoueur(Player users[], int Nb) {
 	printf("Entrez les noms des joueurs :\n");
 	for (int i = 0; i < Nb; i++) {
@@ -31,45 +31,46 @@ void NomJoueur(Player users[], int Nb) {
 		scanf("%s", users[i].nom);
 	}
 }
-
+// le jeu 
 void Jeu(Player players[], int Nbr) {
-	for (int i = 0; i < Nbr; i++) {
-		for (int frame = 0; frame < MAX_FRAMES; frame++) {
-			if (frame > 0) {
-				printf("Score des lancer : %d %d\n", players[i].score[frame - 1][0], players[i].score[frame - 1][1]);
-			}
-			printf("%s, appuyez sur * pour lancer la boule : ", players[i].nom);
+	for (int frame = 0; frame < MAX_FRAMES; frame++) {
+		for (int i = 0; i < Nbr; i++) {
+			printf("%s a vous de jouez , appuyez sur * pour lancer la boule :\n ", players[i].nom);
 			char input;
 			scanf(" %c", &input);
 			int lancer1 = rand() % 11;
+			printf("Score: %d\n", lancer1);
+			printf("\n%s encore a vous, appuyez sur * pour lancer la boule :\n ", players[i].nom);
+			scanf(" %c", &input);
 			int lancer2 = rand() % (11 - lancer1);
-
-
+			printf("Score: %d\n", lancer2);
 			players[i].score[frame][0] = lancer1;
 			players[i].score[frame][1] = lancer2;
 		}
-
-
 	}
 }
+
+// calculer le scores 
 void calculerScores(Player players[], int Nbre) {
 	for (int i = 0; i < Nbre; i++) {
 		int total = 0;
 		for (int frame = 0; frame < MAX_FRAMES; frame++) {
 			if (players[i].score[frame][0] == 10) {
-				// Strike
-				total += 10 + players[i].score[frame + 1][0] * 2 + players[i].score[frame + 1][1] * 2;
+				// Strike avec les regles ~
+				total += 10 + players[i].score[frame + 1][0] + players[i].score[frame + 1][1];
 			}
 			else if (players[i].score[frame][0] + players[i].score[frame][1] == 10) {
-				// Spare
-				total += 10 + players[i].score[frame + 1][0] * 2;
+				// Spare avec les regles ~
+				total += 10 + players[i].score[frame + 1][0];
 			}
 			else {
 				total += players[i].score[frame][0] + players[i].score[frame][1];
 			}
 		}
+		players[i].total = total;
 	}
 }
+// pour afficher les jouerus 
 void afficherScores(Player players[], int numPlayers) {
 	printf("\nScores :\n");
 
